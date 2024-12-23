@@ -1,0 +1,8 @@
+-- CreateTable
+CREATE TABLE "RefreshToken" (
+    "token" TEXT NOT NULL PRIMARY KEY,
+    "UserId" TEXT NOT NULL,
+    "expiresAt" DATETIME NOT NULL,
+    "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT "RefreshToken_UserId_fkey" FOREIGN KEY ("UserId") REFERENCES "User" ("Id") ON DELETE CASCADE ON UPDATE NO ACTION
+);

@@ -1,0 +1,219 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+  
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Invoice {
+  Id          String     @id @default(cuid()) // Mã hóa đơn
+  Checking    Int        // Tình trạng sử dụng hóa đơn
+  Total       Int        // Giá hóa đơn
+  userId        String   // Tài khoản người dùng
+  TimeBooking DateTime   // Ngày giờ đặt vé
+  Payment     Int        // Tình trạng thanh toán hóa đơn
+  Discount    Int        // Tình trạng khuyến mãi của hóa đơn
+  TotalBill   Int        // Tổng tiền của hóa đơn
+  CreatedAt DateTime   @default(now()) // Tự động gán thời gian tạo
+  UpdatedAt DateTime?   @updatedAt // Tự động gán thời gian cập nhật
+  
+  tickets     Ticket[]   @relation("InvoiceTickets") // Quan hệ nhiều-nhiều với Ticket
+  snacks      Snack[]    @relation("InvoiceSnacks")  // Quan hệ nhiều-nhiều với Snack
+  
+  user        User       @relation(fields: [userId], references: [Id]) // Quan hệ với User
+}
+
+model Category {
+  Id    String @id @default(cuid()) // Mã thể loại
+  Title String // Tên thể loại
+  Slug  String // Từ khóa tên thể loại
+  CreatedAt DateTime   @default(now()) // Tự động gán thời gian tạo
+  UpdatedAt DateTime?   @updatedAt // Tự động gán thời gian cập nhật
+
+  Movies Movie[] @relation("CategoryMovies") // Quan hệ với Movie
+}
+
+
+model Event {
+  Id        String     @id @default(cuid())  // Mã sự kiện
+  Title     String     // Tên sự kiện
+  Slug      String     // Từ khóa tên sự kiện
+  Content   String     // Nội dung sự kiện
+  Photo     String     // Ảnh sự kiện
+  Author    String     // Tác giả sự kiện
+  Time      DateTime   // Thời gian tạo sự kiện
+  CreatedAt DateTime   @default(now()) // Tự động gán thời gian tạo
+  UpdatedAt DateTime?   @updatedAt // Tự động gán thời gian cập nhật
+  
+  promotion Promotion[] // Quan hệ với Promotion
+}
+
+model Movie {
+  Id        String     @id @default(cuid())  // Mã phim
+  NameEN    String     // Tên phim chính
+  NameVN    String     // Tên phim phụ
+  Directors String     // Đạo diễn
+  Cast      String     // Diễn viên
+  Premiere  DateTime   // Ngày khởi chiếu
+  Time      Int        // Thời lượng
+  Detail    String     // Chi tiết phim
+  Trailer   String     // Trailer
+  AgeLimit  String     // Giới hạn độ tuổi
+  Photo     String     // Ảnh phim
+  Background String    // Ảnh poster
+  Status    String     // Tình trạng phim
+  Rating    String   // Xếp hạng
+  CreatedAt DateTime   @default(now()) // Tự động gán thời gian tạo
+  UpdatedAt DateTime?   @updatedAt // Tự động gán thời gian cập nhật
+  showtimes Showtime[] // Quan hệ với Showtime
+
+  categories Category[] @relation("CategoryMovies") // Quan hệ nhiều-nhiều với Category
+}
+
+
+model Cinemaroom {
+  Id        String     @id @default(cuid())  // Mã phòng chiếu
+  Name      String     // Tên phòng chiếu
+  Type      Int        // Loại phòng chiếu
+  Block     Int        // Tình trạng phòng chiếu
+  CreatedAt DateTime   @default(now()) // Tự động gán thời gian tạo
+  UpdatedAt DateTime?   @updatedAt // Tự động gán thời gian cập nhật
+  
+  showtimes Showtime[] // Quan hệ với Showtime
+}
+model Showtime {
+  Id        String    @id @default(cuid())  // Mã suất chiếu
+  Date      DateTime  // Ngày chiếu
+  TimeStart String    // Thời gian bắt đầu
+  TimeEnd   String    // Thời gian kết thúc
+  IdFilm    String    // Mã phim
+  IdRoom    String    // Mã phòng
+  Closed    Int       // Tình trạng suất chiếu
+  CreatedAt DateTime   @default(now()) // Tự động gán thời gian tạo
+  UpdatedAt DateTime?   @updatedAt // Tự động gán thời gian cập nhật
+  
+  movie     Movie     @relation(fields: [IdFilm], references: [Id]) // Quan hệ với Movie
+  room      Cinemaroom @relation(fields: [IdRoom], references: [Id]) // Quan hệ với Cinemaroom
+  tickets   Ticket[]  // Quan hệ với Ticket
+}
+
+model Snack {
+  Id        String    @id @default(cuid())  // Mã đồ ăn vặt
+  Name      String    // Tên đồ ăn vặt
+  Type      String    // Loại đồ ăn vặt
+  Block     Int       // Tình trạng đồ ăn vặt
+  Price     Decimal        // Giá đồ ăn vặt
+  Photo     String    // Ảnh đồ ăn vặt
+  CreatedAt DateTime   @default(now()) // Tự động gán thời gian tạo
+  UpdatedAt DateTime?   @updatedAt // Tự động gán thời gian cập nhật
+  
+  invoices  Invoice[] @relation("InvoiceSnacks")  // Quan hệ với Invoice
+}
+
+model TicketPrice {
+  Id        String    @id @default(cuid()) // Mã giá vé
+  Type      String    // Loại giá vé
+  Price     Decimal
+  TimeSlots TimeSlot[] @relation("TicketPriceTimeSlots") // Quan hệ với bảng TimeSlot
+  Holidays  Holiday[] @relation("TicketPriceHolidays") // Quan hệ với bảng Holiday
+  CreatedAt DateTime   @default(now()) // Tự động gán thời gian tạo
+  UpdatedAt DateTime?   @updatedAt // Tự động gán thời gian cập nhật
+}
+
+model TimeSlot {
+  Id        String    @id @default(cuid()) // Mã khung thời gian
+  StartTime String    // Thời gian bắt đầu
+  EndTime   String    // Thời gian kết thúc
+  CreatedAt DateTime   @default(now()) // Tự động gán thời gian tạo
+  UpdatedAt DateTime?   @updatedAt // Tự động gán thời gian cập nhật
+
+  ticketPrices TicketPrice[] @relation("TicketPriceTimeSlots") // Quan hệ với TicketPrice
+}
+
+model Holiday {
+  Id        String    @id @default(cuid()) // Mã ngày lễ
+  Date      DateTime    // Ngày lễ
+  CreatedAt DateTime   @default(now()) // Tự động gán thời gian tạo
+  UpdatedAt DateTime?   @updatedAt // Tự động gán thời gian cập nhật
+
+  ticketPrices TicketPrice[] @relation("TicketPriceHolidays") // Quan hệ với TicketPrice
+}
+
+model Ticket {
+  Id        String    @id @default(cuid())  // Mã vé
+  Name      String    // Tên vé
+  Price     Decimal        // Giá vé
+  available Int       // Tình trạng vé
+  showtime  Showtime  @relation(fields: [IdShowtime], references: [Id]) // Quan hệ với Showtime
+  IdShowtime String  // Mã suất chiếu
+  CreatedAt DateTime   @default(now()) // Tự động gán thời gian tạo
+  UpdatedAt DateTime?   @updatedAt // Tự động gán thời gian cập nhật
+  
+  invoices  Invoice[] @relation("InvoiceTickets") // Quan hệ với Invoice
+}
+
+model User {
+  Id            String         @id @default(cuid())
+  Email         String         @unique
+  Password      String
+  FullName      String
+  Birthday      DateTime
+  Gender        String
+  Phone         String?
+  Photo         String?
+  UserStatus    String?
+  refreshToken  RefreshToken[] // Liên kết với RefreshToken
+  CreatedAt     DateTime       @default(now())
+  UpdatedAt     DateTime?      @updatedAt
+
+  roleId        String         
+  Role          Role           @relation(fields: [roleId], references: [Id])  // Liên kết với bảng Role
+
+  invoices      Invoice[]
+  promotions    Promotion[]    @relation("UserPromotions")
+}
+
+model Role {
+  Id          String   @id @default(uuid())
+  Name        String   @unique
+  Description String?
+  Users       User[]
+}
+
+model Promotion {
+  Id        String       @id @default(cuid())
+  Code      String        @unique
+  Value     Int
+  DateFrom  DateTime
+  DateTo    DateTime
+  IdEvent   String
+  CreatedAt DateTime   @default(now()) // Tự động gán thời gian tạo
+  UpdatedAt DateTime?   @updatedAt // Tự động gán thời gian cập nhật
+
+  event     Event        @relation(fields: [IdEvent], references: [Id])
+  users     User[]       @relation("UserPromotions") // Many-to-many relation
+}
+
+
+
+
+
+model RefreshToken {
+  token       String   @id
+  UserId      String
+  users       User     @relation(fields: [UserId], references: [Id], onDelete: Cascade, onUpdate: NoAction)
+  expiresAt   DateTime
+  createdAt   DateTime @default(now())
+}
+
+
