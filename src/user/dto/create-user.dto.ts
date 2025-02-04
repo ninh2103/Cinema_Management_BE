@@ -19,6 +19,15 @@ export class CreateUserDto {
   Gender: string;
 
   @IsNotEmpty()
+  Photo: string;
+
+  @IsNotEmpty()
+  Phone: string;
+
+  @IsNotEmpty()
+  UserStatus: string;
+
+  @IsNotEmpty()
   Role: string; // Vẫn là string vì Prisma yêu cầu kiểu này
 }
 

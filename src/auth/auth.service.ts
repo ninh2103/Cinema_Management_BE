@@ -91,6 +91,7 @@ export class AuthService implements OnApplicationBootstrap {
         Id: true,
         Email: true,
         FullName: true,
+        Photo: true,
         Password: true, // Cần để so sánh mật khẩu
         Role: {
           select: {
@@ -119,6 +120,7 @@ export class AuthService implements OnApplicationBootstrap {
       email: user.Email,
       name: user.FullName,
       role: user.Role.Name,
+      photo: user.Photo,
     };
     const access_token = this.jwtService.sign(payload);
 

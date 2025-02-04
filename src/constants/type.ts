@@ -7,6 +7,11 @@
 
 import { z } from 'zod';
 
+export const UserStatus = {
+  ACTIVE: 'ACTIVE',
+  UNACTIVE: 'UNACTIVE',
+};
+
 export const Role = {
   Owner: 'Owner',
   Employee: 'Employee',

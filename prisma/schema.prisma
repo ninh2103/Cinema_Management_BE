@@ -30,7 +30,7 @@ model Invoice {
   tickets     Ticket[]   @relation("InvoiceTickets") // Quan hệ nhiều-nhiều với Ticket
   snacks      Snack[]    @relation("InvoiceSnacks")  // Quan hệ nhiều-nhiều với Snack
   
-  user        User       @relation(fields: [userId], references: [Id]) // Quan hệ với User
+  user        User       @relation(fields: [userId], references: [Id], onDelete: Cascade)  // Quan hệ với User
 }
 
 model Category {
@@ -70,7 +70,6 @@ model Movie {
   Trailer   String     // Trailer
   AgeLimit  String     // Giới hạn độ tuổi
   Photo     String     // Ảnh phim
-  Background String    // Ảnh poster
   Status    String     // Tình trạng phim
   Rating    String   // Xếp hạng
   CreatedAt DateTime   @default(now()) // Tự động gán thời gian tạo
@@ -89,7 +88,7 @@ model Cinemaroom {
   CreatedAt DateTime   @default(now()) // Tự động gán thời gian tạo
   UpdatedAt DateTime?   @updatedAt // Tự động gán thời gian cập nhật
   
-  showtimes Showtime[] // Quan hệ với Showtime
+  showtimes Showtime[]  // Quan hệ với Showtime
 }
 model Showtime {
   Id        String    @id @default(cuid())  // Mã suất chiếu
@@ -102,8 +101,8 @@ model Showtime {
   CreatedAt DateTime   @default(now()) // Tự động gán thời gian tạo
   UpdatedAt DateTime?   @updatedAt // Tự động gán thời gian cập nhật
   
-  movie     Movie     @relation(fields: [IdFilm], references: [Id]) // Quan hệ với Movie
-  room      Cinemaroom @relation(fields: [IdRoom], references: [Id]) // Quan hệ với Cinemaroom
+  movie     Movie     @relation(fields: [IdFilm], references: [Id],onDelete: Cascade) // Quan hệ với Movie
+  room      Cinemaroom @relation(fields: [IdRoom], references: [Id],onDelete: Cascade) // Quan hệ với Cinemaroom
   tickets   Ticket[]  // Quan hệ với Ticket
 }
 
@@ -154,13 +153,15 @@ model Ticket {
   Name      String    // Tên vé
   Price     Decimal        // Giá vé
   available Int       // Tình trạng vé
-  showtime  Showtime  @relation(fields: [IdShowtime], references: [Id]) // Quan hệ với Showtime
+  showtime  Showtime  @relation(fields: [IdShowtime], references: [Id],onDelete: Cascade) // Quan hệ với Showtime
   IdShowtime String  // Mã suất chiếu
   CreatedAt DateTime   @default(now()) // Tự động gán thời gian tạo
   UpdatedAt DateTime?   @updatedAt // Tự động gán thời gian cập nhật
   
   invoices  Invoice[] @relation("InvoiceTickets") // Quan hệ với Invoice
 }
+
+
 
 model User {
   Id            String         @id @default(cuid())
@@ -177,7 +178,7 @@ model User {
   UpdatedAt     DateTime?      @updatedAt
 
   roleId        String         
-  Role          Role           @relation(fields: [roleId], references: [Id])  // Liên kết với bảng Role
+  Role          Role           @relation(fields: [roleId], references: [Id],onDelete: Cascade)  // Liên kết với bảng Role
 
   invoices      Invoice[]
   promotions    Promotion[]    @relation("UserPromotions")
@@ -200,7 +201,7 @@ model Promotion {
   CreatedAt DateTime   @default(now()) // Tự động gán thời gian tạo
   UpdatedAt DateTime?   @updatedAt // Tự động gán thời gian cập nhật
 
-  event     Event        @relation(fields: [IdEvent], references: [Id])
+  event     Event        @relation(fields: [IdEvent], references: [Id],onDelete: Cascade)
   users     User[]       @relation("UserPromotions") // Many-to-many relation
 }
 

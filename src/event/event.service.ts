@@ -10,12 +10,12 @@ export class EnentService {
   async create(createEnentDto: CreateEnentDto) {
     const event = await this.prismaService.event.create({
       data: {
-        Time: createEnentDto.time,
-        Slug: createEnentDto.slug,
-        Author: createEnentDto.author,
-        Content: createEnentDto.content,
-        Photo: createEnentDto.photo,
-        Title: createEnentDto.title,
+        Time: createEnentDto.Time,
+        Slug: createEnentDto.Slug,
+        Author: createEnentDto.Author,
+        Content: createEnentDto.Content,
+        Photo: createEnentDto.Photo,
+        Title: createEnentDto.Title,
       },
     });
     return event;

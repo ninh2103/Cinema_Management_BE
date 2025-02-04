@@ -5,6 +5,7 @@ import { CreateCinemaroomDto } from 'src/cinemaroom/dto/create-cinemaroom.dto';
 import {
   BlockCinemaRoom,
   CinemaTypeRoomValue,
+  ClosedTypeRoomValue,
   FilterType,
 } from 'src/constants/type';
 
@@ -15,8 +16,8 @@ export class CinemaroomService {
     const cinemaRoom = await this.prismaService.cinemaroom.create({
       data: {
         Name: createCinemaroomDto.Name,
-        Block: createCinemaroomDto.Block,
-        Type: createCinemaroomDto.Type,
+        Block: ClosedTypeRoomValue[0],
+        Type: CinemaTypeRoomValue[0],
       },
     });
 

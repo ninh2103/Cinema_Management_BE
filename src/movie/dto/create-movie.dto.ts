@@ -32,9 +32,6 @@ export class CreateMovieDto {
   Photo: string;
 
   @IsNotEmpty()
-  Background: string;
-
-  @IsNotEmpty()
   Status: string;
 
   @IsNotEmpty()

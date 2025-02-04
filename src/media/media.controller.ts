@@ -46,6 +46,31 @@ export class MediaController {
     };
   }
 
+  @Post('video')
+  @ResponseMessage('upload file success')
+  @Public()
+  @UseInterceptors(FileInterceptor('file'))
+  uploadVideo(
+    @UploadedFile(
+      new ParseFilePipeBuilder()
+        .addFileTypeValidator({
+          fileType:
+            /(jpeg|png|gif|pdf|msword|vnd.openxmlformats-officedocument.wordprocessingml.document|vnd.ms-excel|mp4|avi|mov|mkv|webm)$/,
+        })
+        .addMaxSizeValidator({
+          maxSize: 1024 * 1024 * 10,
+        })
+        .build({
+          errorHttpStatusCode: HttpStatus.UNPROCESSABLE_ENTITY,
+        }),
+    )
+    file: Express.Multer.File,
+  ) {
+    return {
+      fileName: file.filename,
+    };
+  }
+
   @Post()
   create(@Body() createMediaDto: CreateMediaDto) {
     return this.mediaService.create(createMediaDto);

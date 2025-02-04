@@ -29,7 +29,22 @@ export class TicketPriceService {
         this.prismaService.ticketPrice.findMany({
           take: itemsPerPage,
           skip,
+          include: {
+            TimeSlots: {
+              select: {
+                Id: true,
+                StartTime: true,
+                EndTime: true,
+              },
+            },
+            Holidays: {
+              select: {
+                Date: true,
+              },
+            },
+          },
         }),
+
         this.prismaService.ticketPrice.count({}),
       ]);
 

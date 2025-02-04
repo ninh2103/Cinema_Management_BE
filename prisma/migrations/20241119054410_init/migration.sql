@@ -50,7 +50,6 @@ CREATE TABLE "Movie" (
     "Trailer" TEXT NOT NULL,
     "AgeLimit" TEXT NOT NULL,
     "Photo" TEXT NOT NULL,
-    "Background" TEXT NOT NULL,
     "Status" TEXT NOT NULL,
     "Rating" TEXT NOT NULL,
     "CreatedAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,

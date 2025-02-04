@@ -8,12 +8,17 @@ import {
   Delete,
   Request,
   Query,
+  Headers,
+  UnauthorizedException,
+  UseGuards,
+  Req,
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { Public, ResponseMessage } from 'src/decorator/costomize';
 import { ChangePasswordBodyType, FilterType } from 'src/constants/type';
+import { AuthGuard } from '@nestjs/passport';
 
 @Controller('user')
 export class UserController {
@@ -30,6 +35,16 @@ export class UserController {
   @Public()
   findAll(@Query() param: FilterType) {
     return this.userService.findAll(param);
+  }
+
+  @Get('/me')
+  @UseGuards(AuthGuard('jwt')) // Sử dụng JwtGuard
+  async getMe(@Req() req: any) {
+    const user = req.user; // Lấy thông tin user từ JwtStrategy
+    return {
+      message: 'Get Me Success',
+      data: user, // Trả về thông tin đã giải mã từ token
+    };
   }
 
   @Get(':id')

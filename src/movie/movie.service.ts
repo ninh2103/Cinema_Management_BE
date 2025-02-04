@@ -13,7 +13,6 @@ export class MovieService {
         NameEN: createMovieDto.NameEN,
         NameVN: createMovieDto.NameVN,
         AgeLimit: createMovieDto.AgeLimit,
-        Background: createMovieDto.Background,
         Cast: createMovieDto.Cast,
         Detail: createMovieDto.Detail,
         Directors: createMovieDto.Directors,
@@ -51,11 +50,18 @@ export class MovieService {
 
     try {
       // Sử dụng Promise.all để chạy cả hai tác vụ song song
-      const [movie, totalItems] = await Promise.all([
+      const [movies, totalItems] = await Promise.all([
         this.prismaService.movie.findMany({
           take: itemsPerPage,
           skip,
           where: whereCondition,
+          include: {
+            showtimes: {
+              include: {
+                room: true, // Lấy thông tin phòng chiếu kèm theo
+              },
+            },
+          },
         }),
         this.prismaService.movie.count({
           where: whereCondition,
@@ -64,7 +70,7 @@ export class MovieService {
 
       // Trả về kết quả
       return {
-        data: movie,
+        data: movies,
         meta: {
           totalItems, // Tổng số phòng chiếu
           currentPage: page, // Trang hiện tại
@@ -73,7 +79,7 @@ export class MovieService {
         },
       };
     } catch (error) {
-      throw new Error(`Failed to fetch cinema rooms: ${error.message}`);
+      throw new Error(`Failed to fetch movies: ${error.message}`);
     }
   }
 

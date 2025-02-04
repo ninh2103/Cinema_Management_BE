@@ -2,20 +2,20 @@ import { IsArray, IsNotEmpty, IsOptional } from 'class-validator';
 
 export class CreateEnentDto {
   @IsNotEmpty()
-  title: string;
+  Title: string;
 
   @IsNotEmpty()
-  slug: string;
+  Slug: string;
 
   @IsNotEmpty()
-  content: string;
+  Content: string;
 
   @IsNotEmpty()
-  photo: string;
+  Photo: string;
 
   @IsNotEmpty()
-  author: string;
+  Author: string;
 
   @IsNotEmpty()
-  time: Date;
+  Time: Date;
 }

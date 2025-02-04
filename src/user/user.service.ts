@@ -9,7 +9,12 @@ import { compareSync } from 'bcrypt';
 import { CreateUserDto } from 'src/user/dto/create-user.dto';
 import { comparePassword, hashPassword } from 'src/utils/crypto';
 import { PrismaService } from 'src/prisma.services';
-import { ChangePasswordBodyType, FilterType, Role } from 'src/constants/type';
+import {
+  ChangePasswordBodyType,
+  FilterType,
+  Role,
+  UserStatus,
+} from 'src/constants/type';
 
 @Injectable()
 export class UserService {
@@ -38,6 +43,10 @@ export class UserService {
         Password: hashedPassword,
         Birthday: createUserDto.Birthday,
         Gender: createUserDto.Gender,
+        Phone: createUserDto.Phone,
+        Photo: createUserDto.Photo,
+        UserStatus: UserStatus.ACTIVE,
+
         Role: {
           connect: {
             Name: 'Employee', // ID của Role đã tồn tại
